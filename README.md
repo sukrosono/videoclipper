@@ -28,7 +28,7 @@ CE.SDK's CreativeEngine runs in the browser via WebAssembly. Video decoding, tim
 ## Quick Start
 
 ```bash
-git clone https://github.com/niclas-pfeifer/video-clipper.git
+git clone https://github.com/imgly/videoclipper.git
 cd video-clipper
 npm install
 ```
