@@ -4147,11 +4147,13 @@ export default function App() {
         : counts;
     const resolvedCounts = filteredCounts.size ? filteredCounts : counts;
     let best: { id: string; count: number } | null = null;
-    resolvedCounts.forEach((count, id) => {
+
+    for (const [id, count] of resolvedCounts.entries()) {
       if (!best || count > best.count) {
         best = { id, count };
       }
-    });
+    }
+
     return best?.id ?? null;
   };
 
@@ -4407,8 +4409,8 @@ export default function App() {
       setSpeakerThumbnails(resolvedThumbnails);
       setSpeakerFaceSlots(resolvedSlots);
       const primarySlots =
-        (resolvedPrimarySpeakerId && resolvedSlots[resolvedPrimarySpeakerId]) ??
-        [];
+        (resolvedPrimarySpeakerId && resolvedSlots[resolvedPrimarySpeakerId]) ?
+        resolvedSlots[resolvedPrimarySpeakerId] : [];
       setPrimaryFaceSlots(primarySlots);
       const optionFaces = resolvedPrimarySpeakerId
         ? resolvedThumbnails
@@ -4562,7 +4564,7 @@ export default function App() {
     setSpeakerThumbnails(thumbnails);
     setSpeakerAssignedThumbnails({});
     const primarySlots =
-      (primarySpeakerId && faceSlotsBySpeaker[primarySpeakerId]) ?? [];
+      (primarySpeakerId && faceSlotsBySpeaker[primarySpeakerId]) ? faceSlotsBySpeaker[primarySpeakerId] : [];
     setPrimaryFaceSlots(primarySlots);
     const optionFaces = primarySpeakerId
       ? thumbnails
@@ -4905,13 +4907,14 @@ export default function App() {
         setSpeakerThumbnails(preloadResult.thumbnails);
         const primarySlots =
           (preloadResult.primarySpeakerId &&
-            preloadResult.faceSlotsBySpeaker[preloadResult.primarySpeakerId]) ??
-          [];
+            preloadResult.faceSlotsBySpeaker[preloadResult.primarySpeakerId]) ?
+          preloadResult.faceSlotsBySpeaker[preloadResult.primarySpeakerId] : [];
         setPrimaryFaceSlots(primarySlots);
+        const activeId = preloadResult.primarySpeakerId;
         const optionFaces = preloadResult.primarySpeakerId
           ? preloadResult.thumbnails
               .filter(
-                (thumb) => thumb.speakerId === preloadResult.primarySpeakerId
+                (thumb) => thumb.speakerId === activeId
               )
               .sort((a, b) => a.slotIndex - b.slotIndex)
           : [];
@@ -6629,7 +6632,7 @@ export default function App() {
                       onStart={runAutomaticWorkflow}
                       aspectRatioId={targetAspectRatioId}
                       onAspectRatioChange={handleAspectRatioChange}
-                      showAspectRatio={showTrimStage}
+                      showAspectRatio={!!showTrimStage}
                       showOptions={!showUploadStage}
                       showAction={!showUploadStage}
                       layout={showUploadStage ? "full" : "split"}
@@ -6643,7 +6646,7 @@ export default function App() {
                           }
                           enableUpload={showUploadStage}
                           showControls={false}
-                          showPlaybackControls={showTrimStage}
+                          showPlaybackControls={!!showTrimStage}
                           engineCanvasContainerRef={
                             showInlinePreview
                               ? engineCanvasContainerRef
