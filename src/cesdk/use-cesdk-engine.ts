@@ -80,12 +80,13 @@ export const useCesdkEngine = (options: UseCesdkEngineOptions = {}) => {
         // Clean OPFS directory on initialization
         try {
           const directory = await navigator.storage.getDirectory();
-          const entries = directory.values();
+          const entries = directory as unknown as AsyncIterable<[string, FileSystemHandle]>;
           for await (const entry of entries) {
+            const [name, handle ] = entry as unknown as [string, FileSystemHandle];
             try {
-              await directory.removeEntry(entry.name);
+              await directory.removeEntry(name);
             } catch (removeError) {
-              console.warn(`Failed to remove OPFS entry: ${entry.name}`, removeError);
+              console.warn(`Failed to remove OPFS entry: ${entry}`, removeError);
             }
           }
         } catch (opfsError) {

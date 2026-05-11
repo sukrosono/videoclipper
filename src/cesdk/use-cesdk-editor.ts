@@ -13,6 +13,8 @@ type UseCesdkEditorOptions = {
   engineRef: RefObject<CreativeEngineInstance | null>;
 };
 
+import type { Configuration } from '@cesdk/cesdk-js';
+
 export const useCesdkEditor = ({
   isOpen,
   engineRef,
@@ -47,14 +49,15 @@ export const useCesdkEditor = ({
           })(),
         ]);
         if (isCancelled || !editorContainerRef.current) return;
+        const config = {
+          theme: "dark",
+          baseURL: EDITOR_ASSET_BASE_URL,
+          sceneMode: "Video",
+        } as Configuration & { sceneMode: string };
+
         const editor = await CreativeEditorSDK.create(
           editorContainerRef.current,
-          {
-            license: CESDK_LICENSE_KEY,
-            theme: "dark",
-            baseURL: EDITOR_ASSET_BASE_URL,
-            sceneMode: "Video",
-          }
+          config
         );
         editorInstanceRef.current = editor;
         try {
